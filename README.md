@@ -1,4 +1,4 @@
-##GMath
+## GMath
 
 This is a custom math engine written in C++
 
