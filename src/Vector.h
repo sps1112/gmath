@@ -12,6 +12,7 @@ namespace gmath
         bool isInitialized = false;
         // Private variables
     public:
+        float *list;
         float *array[4];
         int size;
         Vector() // Standard Constructor
@@ -54,38 +55,55 @@ namespace gmath
             //a
         }
 
-        void SetToArray(float *x) // Vec1
+        void SetList()
         {
             isInitialized = true;
+            list = new float[size];
+        }
+
+        ~Vector()
+        {
+            delete[] list;
+        }
+
+        float getVal(int index)
+        {
+            Log(index);
+            return *(array[index]);
+        }
+
+        void SetToArray(float *x) // Vec1
+        {
             size = 1;
             array[0] = x;
+            SetList();
         }
 
         void SetToArray(float *x, float *y) // Vec2
         {
-            isInitialized = true;
             size = 2;
             array[0] = x;
             array[1] = y;
+            SetList();
         }
 
         void SetToArray(float *x, float *y, float *z) // Vec3
         {
-            isInitialized = true;
             size = 3;
             array[0] = x;
             array[1] = y;
             array[2] = z;
+            SetList();
         }
 
         void SetToArray(float *x, float *y, float *z, float *w) // Vec4
         {
-            isInitialized = true;
             size = 4;
             array[0] = x;
             array[1] = y;
             array[2] = z;
             array[3] = w;
+            SetList();
         }
 
         void operator=(const Vector &b) // Assignment Operator
