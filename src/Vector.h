@@ -49,9 +49,16 @@ namespace gmath
             list = localPointer;
         }
 
-        float GetVal(int index)
+        template <typename T>
+        float GetVal(const T &b, int index)
         {
-            return *(array[index]);
+            return *(b.array[index]);
+        }
+
+        template <typename T>
+        float *GetVar(const T &b, int index)
+        {
+            return b.array[index];
         }
 
         void SetVal(int index, float value)
@@ -96,7 +103,8 @@ namespace gmath
                 {
                     Log("Inside loop");
                     std::cout << i << "  " << *(b.array[i]) << std::endl;
-                    *(array[i]) = *(b.array[i]);
+                    SetVal(i, GetVal(b, i));
+                    // *(array[i]) = *(b.array[i]);
                 }
             }
         }
@@ -140,8 +148,8 @@ namespace gmath
             // Log("Assignment Operator");
             for (int i = 0; i < size; i++)
             {
-                //SetVal(i, b.GetVal(i));
-                *(array[i]) = *(b.array[i]);
+                SetVal(i, GetVal(b, i));
+                //*(array[i]) = *(b.array[i]);
             }
         }
 
@@ -162,7 +170,8 @@ namespace gmath
             T c;
             for (int i = 0; i < size; i++)
             {
-                *(c.array[i]) = *(this->array[i]) + *(b.array[i]);
+                c.SetVal(i, (GetVal(*this, i) + GetVal(b, i)));
+                // *(c.array[i]) = *(this->array[i]) + *(b.array[i]);
             }
             return c;
         }
@@ -173,7 +182,8 @@ namespace gmath
             T c;
             for (int i = 0; i < size; i++)
             {
-                *(c.array[i]) = *(this->array[i]) - *(b.array[i]);
+                c.SetVal(i, (GetVal(*this, i) - GetVal(b, i)));
+                // *(c.array[i]) = *(this->array[i]) - *(b.array[i]);
             }
             return c;
         }
@@ -182,9 +192,11 @@ namespace gmath
         friend std::ostream &operator<<(std::ostream &output, const T &b) //Output vec
         {
             output << "(";
+            T c = T();
             for (int i = 0; i < b.size; i++)
             {
-                output << *(b.array[i]);
+                output << c.GetVal(b, i);
+                // output << *(b.array[i]);
                 if (i != b.size - 1)
                 {
                     output << ",";
@@ -197,9 +209,13 @@ namespace gmath
         template <typename T>
         friend std::istream &operator>>(std::istream &input, T &b) // Input Vec
         {
+            T c = T();
+            float *temp;
             for (int i = 0; i < b.size; i++)
             {
-                input >> *(b.array[i]);
+                temp = c.GetVar(b, i);
+                input >> *temp;
+                // input >> *(b.array[i]);
             }
             return input;
         }
@@ -210,7 +226,8 @@ namespace gmath
             bool status = true;
             for (int i = 0; i < size; i++)
             {
-                if (*this->array[i] != *b.array[i])
+                //if (*this->array[i] != *b.array[i])
+                if (GetVal(*this, i) != GetVal(b, i))
                 {
                     status = false;
                     break;
@@ -225,7 +242,8 @@ namespace gmath
             bool status = true;
             for (int i = 0; i < size; i++)
             {
-                if (*this->array[i] != *b.array[i])
+                // if (*this->array[i] != *b.array[i])
+                if (GetVal(*this, i) != GetVal(b, i))
                 {
                     status = false;
                     break;
@@ -239,7 +257,8 @@ namespace gmath
             float mag = 0;
             for (int i = 0; i < size; i++)
             {
-                mag += ((*(this->array[i])) * (*(this->array[i])));
+                mag += (GetVal(*this, i)) * (GetVal(*this, i));
+                // mag += ((*(this->array[i])) * (*(this->array[i])));
             }
             return mag;
         }
@@ -256,7 +275,8 @@ namespace gmath
             {
                 for (int i = 0; i < size; i++)
                 {
-                    *(this->array[i]) /= mag;
+                    SetVal(i, GetVal(*this, i) / mag);
+                    // *(this->array[i]) /= mag;
                 }
             }
         }
@@ -266,7 +286,7 @@ namespace gmath
         {
             for (int i = 0; i < Min(size, b.size); i++)
             {
-                *b.array[i] = *array[i];
+                // *b.array[i] = *array[i];
             }
             return b;
         }
@@ -280,7 +300,8 @@ namespace gmath
         T c;
         for (int i = 0; i < a.size; i++)
         {
-            *(c.array[i]) = +*(a.array[i]);
+            c.SetVal(i, c.GetVal(a, i));
+            // *(c.array[i]) = +*(a.array[i]);
         }
         return c;
     }
@@ -291,7 +312,8 @@ namespace gmath
         T c;
         for (int i = 0; i < a.size; i++)
         {
-            *(c.array[i]) = -*(a.array[i]);
+            c.SetVal(i, -c.GetVal(a, i));
+            // *(c.array[i]) = -*(a.array[i]);
         }
         return c;
     }
@@ -303,7 +325,8 @@ namespace gmath
         T c;
         for (int i = 0; i < a.size; i++)
         {
-            *(c.array[i]) = *(a.array[i]) * b;
+            c.SetVal(i, c.GetVal(a, i) * b);
+            // *(c.array[i]) = *(a.array[i]) * b;
         }
         return c;
     }
@@ -320,7 +343,8 @@ namespace gmath
         T c;
         for (int i = 0; i < a.size; i++)
         {
-            *(c.array[i]) = *(a.array[i]) / b;
+            c.SetVal(i, c.GetVal(a, i) / b);
+            // *(c.array[i]) = *(a.array[i]) / b;
         }
         return c;
     }
@@ -331,7 +355,8 @@ namespace gmath
         T c;
         for (int i = 0; i < a.size; i++)
         {
-            *(c.array[i]) = *(b.array[i]) - *(a.array[i]);
+            c.SetVal(i, (c.GetVal(b, i) - c.GetVal(a, i)));
+            // *(c.array[i]) = *(b.array[i]) - *(a.array[i]);
         }
         return c;
     }
@@ -357,7 +382,8 @@ namespace gmath
         T c = GetDisplacement(a, b);
         for (int i = 0; i < a.size; i++)
         {
-            *c.array[i] = *a.array[i] + (range) * (*c.array[i]);
+            c.SetVal(i, c.GetVal(a, i) + range * c.GetVal(c, i));
+            // *c.array[i] = *a.array[i] + (range) * (*c.array[i]);
         }
         return c;
     }
@@ -368,7 +394,8 @@ namespace gmath
         T c;
         for (int i = 0; i < a.size; i++)
         {
-            *c.array[i] = Max(*a.array[i], *b.array[i]);
+            c.SetVal(i, Max(c.GetVal(a, i), c.GetVal(b, i)));
+            // *c.array[i] = Max(*a.array[i], *b.array[i]);
         }
         return c;
     }
@@ -379,7 +406,8 @@ namespace gmath
         T c = T();
         for (int i = 0; i < a.size; i++)
         {
-            *c.array[i] = Min(*a.array[i], *b.array[i]);
+            c.SetVal(i, Min(c.GetVal(a, i), c.GetVal(b, i)));
+            // *c.array[i] = Min(*a.array[i], *b.array[i]);
         }
         return c;
     }
@@ -392,14 +420,16 @@ namespace gmath
         float mag = 0;
         for (int i = 0; i < a.size; i++)
         {
-            mag += (*a.array[i]) * (*a.array[i]);
+            mag += (c.GetVal(a, i)) * (c.GetVal(a, i));
+            // mag += (*a.array[i]) * (*a.array[i]);
         }
         mag = sqrt(mag);
         if (mag != 0)
         {
             for (int i = 0; i < a.size; i++)
             {
-                *c.array[i] = (*a.array[i]) / mag;
+                c.SetVal(i, c.GetVal(a, i) / mag);
+                // *c.array[i] = (*a.array[i]) / mag;
             }
         }
         return c;
@@ -409,9 +439,11 @@ namespace gmath
     float DotProduct(const T &a, const T &b) // Vec A . Vec B
     {
         float c = 0;
+        T d = T();
         for (int i = 0; i < a.size; i++)
         {
-            c += *(a.array[i]) * *(b.array[i]);
+            c += d.GetVal(a, i) * d.GetVal(b, i);
+            // c += *(a.array[i]) * *(b.array[i]);
         }
         return c;
     }
@@ -419,10 +451,11 @@ namespace gmath
     template <typename T>
     T DotVector(const T &a, const T &b) // Vec formed by the dot product components
     {
-        T c = 0;
+        T c = T();
         for (int i = 0; i < a.size; i++)
         {
-            *(c.array[i]) = *(a.array[i]) * *(b.array[i]);
+            c.SetVal(i, c.GetVal(a, i) * c.GetVal(b, i));
+            // *(c.array[i]) = *(a.array[i]) * *(b.array[i]);
         }
         return c;
     }

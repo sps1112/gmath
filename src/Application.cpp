@@ -11,8 +11,8 @@ int main()
     gmath::Vector3 c(1, 1, 1);
     std::cout << "The first is " << a << std::endl;
     std::cout << "The second is " << b << std::endl;
-    // Log("Enter Vec3");
-    // std::cin >> c;
+    Log("Enter Vec3");
+    std::cin >> c;
     std::cout << "The input is " << c << std::endl;
     c = a;
     std::cout << "The assignment is " << c << std::endl;
@@ -23,8 +23,9 @@ int main()
     std::cout << "The mag of " << a << " is " << a.GetMagnitude() << std::endl;
     float mag = a.GetMagnitude();
     std::cout << "The sqr mag of " << a << " is " << a.GetSqrMagnitude() << std::endl;
+    std::cout << "The value of " << a;
     a.Normalize();
-    std::cout << "The normalized of " << a << " is " << a << std::endl;
+    std::cout << " after normalization is " << a << std::endl;
     a = a * mag;
     std::cout << "The positive of " << a << " is " << +a << std::endl;
     std::cout << "The negative of " << a << " is " << -a << std::endl;
