@@ -10,15 +10,53 @@ namespace gmath
     {
     private:
         bool isInitialized = false;
-        // Private variables
+
     public:
         float **list;
         float *array[4];
         int size;
         Vector() // Standard Constructor
         {
-            /*Log("call constructor");
-            std::cout << &array[0] << std::endl;*/
+            list = NULL;
+            //Log("Constructor");
+        }
+
+        void PrintList()
+        {
+            std::cout << &list << "  " << list << "  " << *list << "   " << **list << "  " << size << std::endl;
+            std::cout << &list << "  " << list + 1 << "  " << *(list + 1) << "   " << **(list + 1) << "  " << size << std::endl;
+            std::cout << &list << "  " << list + 2 << "  " << *(list + 2) << "   " << **(list + 2) << "  " << size << std::endl;
+        }
+
+        ~Vector() // Destructor
+        {
+            if (list)
+            {
+                if (!isInitialized)
+                {
+                    Log("Not initially defined");
+                    SetDefault();
+                }
+                //PrintList();
+                delete[] list;
+                list = NULL;
+            }
+        }
+
+        void SetToList(float **localPointer)
+        {
+            isInitialized = true;
+            list = localPointer;
+        }
+
+        float GetVal(int index)
+        {
+            return *(array[index]);
+        }
+
+        void SetVal(int index, float value)
+        {
+            *(array[index]) = value;
         }
 
         /* Vector(const Vector &b) // Copy COnstructor
@@ -31,6 +69,19 @@ namespace gmath
             deepCopy(b);
         }*/
 
+        void SetDefault() // Set default values
+        {
+            Log("Setting Default Value");
+            delete[] list;
+            list = NULL;
+            list = new float *[4];
+            float a = 5.0;
+            for (int i = 0; i < 4; i++)
+            {
+                *(list + i) = &a;
+            }
+        }
+
         void deepCopy(const Vector &b)
         {
             if (!isInitialized)
@@ -40,7 +91,7 @@ namespace gmath
             Log("Calling deepCopy");
             if (b.array)
             {
-                Log("Inside IF");
+                Log("Inside If");
                 for (int i = 0; i < b.size; i++)
                 {
                     Log("Inside loop");
@@ -50,51 +101,10 @@ namespace gmath
             }
         }
 
-        void SetDefault()
-        {
-            // Set default values
-        }
-
-        void SetList()
-        {
-            isInitialized = true;
-            list = new float *[size];
-            /*float **tempPointer = &list;
-            for (int i = 0; i < size; i++)
-            {
-                //tempPointer = &list + i;
-                //*tempPointer = array[i];
-            }*/
-        }
-
-        ~Vector()
-        {
-            delete[] list;
-            list = NULL;
-        }
-
-        float GetVal(int index)
-        {
-            return *(array[index]);
-        }
-
-        void SetVal(int index, float value)
-        {
-            *array[index] = value;
-        }
-
-        void SetToList(float **localPointer)
-        {
-            isInitialized = true;
-            list = localPointer;
-        }
-
         void SetToArray(float *x) // Vec1
         {
-            Log("Set Vec1");
             size = 1;
             array[0] = x;
-            SetList();
         }
 
         void SetToArray(float *x, float *y) // Vec2
@@ -102,16 +112,18 @@ namespace gmath
             size = 2;
             array[0] = x;
             array[1] = y;
-            SetList();
         }
 
         void SetToArray(float *x, float *y, float *z) // Vec3
         {
+            if (list == NULL)
+            {
+                SetDefault();
+            }
             size = 3;
             array[0] = x;
             array[1] = y;
             array[2] = z;
-            SetList();
         }
 
         void SetToArray(float *x, float *y, float *z, float *w) // Vec4
@@ -121,12 +133,11 @@ namespace gmath
             array[1] = y;
             array[2] = z;
             array[3] = w;
-            SetList();
         }
 
         void operator=(const Vector &b) // Assignment Operator
         {
-            //Log("Assignment Operator");
+            // Log("Assignment Operator");
             for (int i = 0; i < size; i++)
             {
                 //SetVal(i, b.GetVal(i));
@@ -137,7 +148,7 @@ namespace gmath
         template <typename T>
         T &operator=(const T &b) // Other Assignment Operator
         {
-            //Log("Assignment Operator-2");
+            // Log("Assignment Operator-2");
             if (this != &b)
             {
                 deepCopy(b);
@@ -275,7 +286,7 @@ namespace gmath
     }
 
     template <typename T>
-    T operator-(T a) // -VecA
+    T operator-(const T &a) // -VecA
     {
         T c;
         for (int i = 0; i < a.size; i++)
@@ -286,8 +297,9 @@ namespace gmath
     }
 
     template <typename T>
-    T operator*(const float &b, T a) //  float x* Vec A
+    T operator*(const float &b, const T &a) //  float x* Vec A
     {
+        //a.PrintList();
         T c;
         for (int i = 0; i < a.size; i++)
         {
@@ -297,13 +309,13 @@ namespace gmath
     }
 
     template <typename T>
-    T operator*(T a, const float &b) //  Vec A*float x
+    T operator*(const T &a, const float &b) //  Vec A*float x
     {
         return operator*(b, a);
     }
 
     template <typename T>
-    T operator/(T a, const float &b) //  Vec A / float x
+    T operator/(const T &a, const float &b) //  Vec A / float x
     {
         T c;
         for (int i = 0; i < a.size; i++)
@@ -314,7 +326,7 @@ namespace gmath
     }
 
     template <typename T>
-    T GetDisplacement(T a, T b) // returns Displacment from a to b
+    T GetDisplacement(const T &a, const T &b) // returns Displacment from a to b
     {
         T c;
         for (int i = 0; i < a.size; i++)
@@ -325,30 +337,33 @@ namespace gmath
     }
 
     template <typename T>
-    float GetDistance(T a, T b) // returns Distance from a to b
+    float GetDistance(const T &a, const T &b) // returns Distance from a to b
     {
         T c = GetDisplacement(a, b);
         return c.GetMagnitude();
     }
 
     template <typename T>
-    float GetSqrDistance(T a, T b) // returns Distance from a to b
+    float GetSqrDistance(const T &a, const T &b) // returns Distance from a to b
     {
         T c = GetDisplacement(a, b);
         return c.GetSqrMagnitude();
     }
 
     template <typename T>
-    T Lerp(T a, T b, float range) // Lerps between VecA and VecB by range(0<=range<=1)
+    T Lerp(const T &a, const T &b, float range) // Lerps between VecA and VecB by range(0<=range<=1)
     {
         range = Clamp(0, 1, range);
         T c = GetDisplacement(a, b);
-        c = a + range * c;
+        for (int i = 0; i < a.size; i++)
+        {
+            *c.array[i] = *a.array[i] + (range) * (*c.array[i]);
+        }
         return c;
     }
 
     template <typename T>
-    T GetMax(T a, T b) // Get Vec by Max components of A and B
+    T GetMax(const T &a, const T &b) // Get Vec by Max components of A and B
     {
         T c;
         for (int i = 0; i < a.size; i++)
@@ -359,7 +374,7 @@ namespace gmath
     }
 
     template <typename T>
-    T GetMin(T a, T b) // Get Vec by Min components of A and B
+    T GetMin(const T &a, const T &b) // Get Vec by Min components of A and B
     {
         T c = T();
         for (int i = 0; i < a.size; i++)
@@ -370,17 +385,28 @@ namespace gmath
     }
 
     template <typename T>
-    T GetNormalized(T a) // returns VecA/(|VecA|)
+    T GetNormalized(const T &a) // returns VecA/(|VecA|)
     {
-        if (a.GetMagnitude() != 0)
+        T c = T();
+        c = a;
+        float mag = 0;
+        for (int i = 0; i < a.size; i++)
         {
-            return (a / a.GetMagnitude());
+            mag += (*a.array[i]) * (*a.array[i]);
         }
-        return a;
+        mag = sqrt(mag);
+        if (mag != 0)
+        {
+            for (int i = 0; i < a.size; i++)
+            {
+                *c.array[i] = (*a.array[i]) / mag;
+            }
+        }
+        return c;
     }
 
     template <typename T>
-    float DotProduct(T a, T b) // Vec A . Vec B
+    float DotProduct(const T &a, const T &b) // Vec A . Vec B
     {
         float c = 0;
         for (int i = 0; i < a.size; i++)
@@ -391,7 +417,7 @@ namespace gmath
     }
 
     template <typename T>
-    T DotVector(T a, T b) // Vec formed by the dot product components
+    T DotVector(const T &a, const T &b) // Vec formed by the dot product components
     {
         T c = 0;
         for (int i = 0; i < a.size; i++)
@@ -416,9 +442,6 @@ namespace gmath
             localList = new float *[1];
             *(localList + 0) = &x;
             SetToList(localList);
-            delete[] localList;
-            localList = NULL;
-
             SetToArray(&x);
         }
     };
@@ -441,9 +464,6 @@ namespace gmath
             *(localList + 0) = &x;
             *(localList + 1) = &y;
             SetToList(localList);
-            delete[] localList;
-            localList = NULL;
-
             SetToArray(&x, &y);
         }
     };
@@ -462,16 +482,12 @@ namespace gmath
             x = X;
             y = Y;
             z = Z;
-
             float **localList = NULL;
             localList = new float *[3];
             *(localList + 0) = &x;
             *(localList + 1) = &y;
             *(localList + 2) = &z;
             SetToList(localList);
-            delete[] localList;
-            localList = NULL;
-
             SetToArray(&x, &y, &z);
         }
 
@@ -502,8 +518,6 @@ namespace gmath
             *(localList + 2) = &z;
             *(localList + 3) = &w;
             SetToList(localList);
-            delete[] localList;
-            localList = NULL;
 
             SetToArray(&x, &y, &z, &w);
         }
@@ -534,7 +548,7 @@ namespace gmath
 
     //Class functions
 
-    Vector3 Cross(Vector3 a, Vector3 b)
+    Vector3 Cross(const Vector3 &a, const Vector3 &b)
     {
         Vector3 c;
         c.x = a.y * b.z - a.z * b.y;
