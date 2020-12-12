@@ -52,18 +52,21 @@ namespace gmath
         template <typename T>
         float GetVal(const T &b, int index)
         {
-            return *(b.array[index]);
+            return **(b.list + index);
+            // return *(b.array[index]);
         }
 
         template <typename T>
         float *GetVar(const T &b, int index)
         {
-            return b.array[index];
+            return *(b.list + index);
+            // return b.array[index];
         }
 
         void SetVal(int index, float value)
         {
-            *(array[index]) = value;
+            **(list + index) = value;
+            // *(array[index]) = value;
         }
 
         /* Vector(const Vector &b) // Copy COnstructor
