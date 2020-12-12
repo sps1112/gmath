@@ -13,7 +13,7 @@ namespace gmath
 
     public:
         float **list;
-        float *array[4];
+        // float *array[4];
         int size;
         Vector() // Standard Constructor
         {
@@ -99,20 +99,21 @@ namespace gmath
                 SetDefault();
             }
             Log("Calling deepCopy");
-            if (b.array)
+            // if (b.array)
+            if (*b.list)
             {
                 Log("Inside If");
                 for (int i = 0; i < b.size; i++)
                 {
                     Log("Inside loop");
-                    std::cout << i << "  " << *(b.array[i]) << std::endl;
+                    std::cout << i << "  " << GetVal(b, i) << std::endl;
                     SetVal(i, GetVal(b, i));
                     // *(array[i]) = *(b.array[i]);
                 }
             }
         }
 
-        void SetToArray(float *x) // Vec1
+        /*void SetToArray(float *x) // Vec1
         {
             size = 1;
             array[0] = x;
@@ -144,7 +145,7 @@ namespace gmath
             array[1] = y;
             array[2] = z;
             array[3] = w;
-        }
+        }*/
 
         void operator=(const Vector &b) // Assignment Operator
         {
@@ -472,13 +473,14 @@ namespace gmath
         float x;
         Vector1(float X = 0)
         {
+            size = 1;
             x = X;
 
             float **localList = NULL;
             localList = new float *[1];
             *(localList + 0) = &x;
             SetToList(localList);
-            SetToArray(&x);
+            // SetToArray(&x);
         }
     };
 
@@ -492,6 +494,7 @@ namespace gmath
         float y;
         Vector2(float X = 0, float Y = 0)
         {
+            size = 2;
             x = X;
             y = Y;
 
@@ -500,7 +503,7 @@ namespace gmath
             *(localList + 0) = &x;
             *(localList + 1) = &y;
             SetToList(localList);
-            SetToArray(&x, &y);
+            // SetToArray(&x, &y);
         }
     };
 
@@ -515,6 +518,7 @@ namespace gmath
         float z;
         Vector3(float X = 0, float Y = 0, float Z = 0)
         {
+            size = 3;
             x = X;
             y = Y;
             z = Z;
@@ -524,7 +528,7 @@ namespace gmath
             *(localList + 1) = &y;
             *(localList + 2) = &z;
             SetToList(localList);
-            SetToArray(&x, &y, &z);
+            // SetToArray(&x, &y, &z);
         }
 
         Vector3 Cross(Vector3 a, Vector3 b);
@@ -542,6 +546,7 @@ namespace gmath
         float w;
         Vector4(float X = 0, float Y = 0, float Z = 0, float W = 0)
         {
+            size = 4;
             x = X;
             y = Y;
             z = Z;
@@ -555,7 +560,7 @@ namespace gmath
             *(localList + 3) = &w;
             SetToList(localList);
 
-            SetToArray(&x, &y, &z, &w);
+            // SetToArray(&x, &y, &z, &w);
         }
     };
 
