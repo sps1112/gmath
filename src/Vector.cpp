@@ -1,8 +1,9 @@
-#ifndef VECTOR_H
-#define VECTOR_H
+#ifndef VECTOR
+#define VECTOR
 
 #include <iostream>
 #include "Standard.h"
+#include "Vector.h"
 
 namespace gmath
 {
