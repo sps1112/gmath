@@ -1,5 +1,5 @@
-#ifndef STANDARD
-#define STANDARD
+#ifndef STANDARD_H
+#define STANDARD_H
 
 #include <iostream>
 #include <cmath>
@@ -19,6 +19,31 @@ void Log(std::string message)
 void Log(const float x)
 {
     Log(std::to_string(x));
+}
+
+void DrawDash(int length)
+{
+    for (int i = 0; i < length; i++)
+    {
+        std::cout << "-";
+    }
+    Log(" ");
+}
+
+void ShowStart()
+{
+    DrawDash(15);
+    Log("Program Started");
+    DrawDash(15);
+    Log("  ");
+}
+
+void ShowEnd()
+{
+    Log("  ");
+    DrawDash(15);
+    Log("Program Ended");
+    DrawDash(15);
 }
 
 float Clamp(float min, float max, float value)
